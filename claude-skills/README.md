@@ -10,11 +10,14 @@ Skills are defined as markdown files in `.claude/commands/`. When you type `/ski
 
 | Skill | Command | Phase | What it does |
 |---|---|---|---|
+| Pre-Brief Generator | `/generate-pre-brief` | Before Session 1 | Researches domain and produces the Domain Pre-Brief to share with the SME |
 | Session Synthesizer | `/synthesize-session` | After every session | Extracts themes, problems, vocabulary, and threads from raw notes |
-| Problem Extractor | `/extract-problems` | Phase 2 | Classifies problems by urgency, frequency, solvability, and market opportunity |
-| Pillar Mapper | `/map-pillars` | Phase 3 | Builds a structured knowledge taxonomy from session context |
-| Research Enricher | `/enrich-domain` | Phase 4 | Cross-references internal insights with live market data via search MCP |
-| GTM Canvas | `/gtm-canvas` | Phase 5–6 | Generates ICP, positioning angles, channel hypotheses, and pricing |
+| Problem Extractor | `/extract-problems` | After Session 2 | Classifies problems by urgency, frequency, solvability, and market opportunity |
+| Pillar Mapper | `/map-pillars` | After Session 3 | Builds a structured knowledge taxonomy from session context |
+| SOP Generator | `/generate-sop` | After Session 3 | Produces a first-draft SOP from the knowledge pillar structure |
+| Research Enricher | `/enrich-domain` | After Session 4 | Cross-references internal insights with live market data via search MCP |
+| GTM Canvas | `/gtm-canvas` | After enrichment | Generates ICP, positioning angles, channel hypotheses, and pricing |
+| Output Track Classifier | `/classify-output-track` | After Problem Map | Recommends the right venture track based on urgency, market, and solvability |
 
 ---
 
@@ -29,11 +32,14 @@ ls .claude/commands/
 
 You should see:
 ```
+generate-pre-brief.md
 synthesize-session.md
 extract-problems.md
 map-pillars.md
+generate-sop.md
 enrich-domain.md
 gtm-canvas.md
+classify-output-track.md
 ```
 
 ---
@@ -129,6 +135,69 @@ gtm-canvas.md
 3. Flags the top 3 risk assumptions that need validation before building
 
 **Output:** `outputs/gtm-canvas.md`
+
+---
+
+## Full Engagement Skill Sequence
+
+```
+Before Session 1:  /generate-pre-brief
+After Session 1:   /synthesize-session
+After Session 2:   /synthesize-session → /extract-problems
+After Session 3:   /synthesize-session → /extract-problems → /map-pillars → /generate-sop
+After Session 4:   /synthesize-session → /extract-problems → /classify-output-track → /gtm-canvas
+Between 4 and 5:   /enrich-domain
+After Session 6:   /gtm-canvas (final version)
+```
+
+Total automated processing time across a full engagement: under 2 hours.
+
+---
+
+## New Skills: Definitions
+
+### `/generate-pre-brief`
+
+**When to use:** Before Session 1. Requires Brave Search MCP for full output.
+
+**What Claude does:**
+1. Takes the domain name and any research notes you've gathered
+2. Generates targeted search queries and executes them via Brave Search MCP
+3. Structures results into the Domain Pre-Brief format (market size, incumbents, practitioner sentiment, gaps)
+4. Produces a "provocation" hypothesis for the expert to react to
+5. Writes output to `templates/pre-brief-[domain].md`
+
+**Output:** `templates/pre-brief-[domain].md` — ready to send to the SME before Session 1.
+
+---
+
+### `/generate-sop`
+
+**When to use:** After Session 3 (Knowledge Mapping). Produces a first-draft SOP from the pillar taxonomy.
+
+**What Claude does:**
+1. Reads the knowledge pillar taxonomy and all session notes
+2. Identifies the process with the highest tacit knowledge density
+3. Structures it into a step-by-step SOP using the sop-pack template
+4. Populates "Expert Insight" sections from tacit signals in session notes
+5. Marks sections that need more expert input with `[NEEDS REVIEW]`
+
+**Output:** `outputs/sop-draft.md` — review and complete in Session 4 or async.
+
+---
+
+### `/classify-output-track`
+
+**When to use:** After Session 4 or after the problem map is built.
+
+**What Claude does:**
+1. Reads the problem map and any GTM canvas drafts
+2. Applies the output decision tree (urgency → market size → solvability → speed-to-revenue)
+3. Recommends one primary track: Micro-Tool / Service / Course-SOP / Report / Startup
+4. Notes which other tracks were considered and why deprioritized
+5. Appends recommendation to `outputs/gtm-canvas.md`
+
+**Output:** Output track recommendation with rationale.
 
 ---
 
