@@ -1,0 +1,11 @@
+{
+  "name": "unlocked",
+  "owner": { "name": "Mohammud Hassan", "url": "https://mohammud.com" },
+  "plugins": [
+    {
+      "name": "interview-intelligence",
+      "source": "./plugins/interview-intelligence",
+      "description": "Turn expert interviews into problem maps, knowledge pillars, SOPs and a GTM canvas."
+    }
+  ]
+}
